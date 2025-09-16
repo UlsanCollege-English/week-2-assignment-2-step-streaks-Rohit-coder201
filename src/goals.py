@@ -1,8 +1,5 @@
-"""Step Streaks — Starter
+"""Step Streaks — Solution"""
 
-You are analyzing a user's daily step counts.
-Implement without mutating inputs.
-"""
 from typing import List, Tuple
 
 
@@ -11,7 +8,21 @@ def max_window_sum(values: List[int], k: int) -> Tuple[int, int] | None:
 
     If k <= 0, raise ValueError. If k > len(values), return None.
     """
-    raise NotImplementedError
+    if k <= 0:
+        raise ValueError("k must be positive")
+    n = len(values)
+    if k > n:
+        return None
+
+    window_sum = sum(values[:k])
+    best_start, best_sum = 0, window_sum
+
+    for i in range(k, n):
+        window_sum += values[i] - values[i - k]
+        if window_sum > best_sum:
+            best_start, best_sum = i - k + 1, window_sum
+
+    return best_start, best_sum
 
 
 def count_goal_windows(values: List[int], k: int, target_avg: float) -> int:
@@ -19,7 +30,22 @@ def count_goal_windows(values: List[int], k: int, target_avg: float) -> int:
 
     If k <= 0, raise ValueError. If k > len(values), return 0.
     """
-    raise NotImplementedError
+    if k <= 0:
+        raise ValueError("k must be positive")
+    n = len(values)
+    if k > n:
+        return 0
+
+    target_sum = target_avg * k
+    window_sum = sum(values[:k])
+    count = 1 if window_sum >= target_sum else 0
+
+    for i in range(k, n):
+        window_sum += values[i] - values[i - k]
+        if window_sum >= target_sum:
+            count += 1
+
+    return count
 
 
 def longest_rising_streak(values: List[int]) -> int:
@@ -27,4 +53,14 @@ def longest_rising_streak(values: List[int]) -> int:
 
     Empty list -> 0. Single element -> 1.
     """
-    raise NotImplementedError
+    if not values:
+        return 0
+
+    longest = curr = 1
+    for prev, nxt in zip(values, values[1:]):
+        if nxt > prev:
+            curr += 1
+            longest = max(longest, curr)
+        else:
+            curr = 1
+    return longest
